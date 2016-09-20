@@ -61,7 +61,7 @@ hooks.getById = function(id, q, position, userId) {
 
 
 
-hooks.redeem = function(id, q, position, userId) {
+hooks.redeem = function(id, q, position) {
   q = q || {};
   const queryObject = {};
   queryObject.coordinates = [
@@ -80,10 +80,10 @@ hooks.redeem = function(id, q, position, userId) {
   .select('*', st.asText('polygon'))
   .where(st.intersects('polygon', point))
   .andWhere('hooks.id', '=', id).then(function(hook) {
-    if (hook && hook[0] && userId) {
+    if (hook && hook[0]) {
       hooks.addRedemption({
         id: hook[0].id,
-        user: userId
+        user: 1
       })
     } else {
       throw new Error('You must be inside the location to redeem')

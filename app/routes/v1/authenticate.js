@@ -86,7 +86,7 @@ router.route('/')
       } else if (user) {
         getFacebookUser(req.body.token)
         .then(function(body) {
-          var token = jwt.sign({ _id: user.user.id, user: user.user, memberships: user.memberships }, req.app.get('superSecret'), {
+          var token = jwt.sign({ id: user.user.id, user: user.user, memberships: user.memberships }, req.app.get('superSecret'), {
             expiresIn: 2592000 // expires in 24 hours
           });
           res.json({token: token});
@@ -108,15 +108,16 @@ router.route('/')
       Users.where(query).fetch({})
       .then(function(user) {
         if (user) {
-          Memberships.where({
-            membership_user_id: user.id
-          }).fetchAll({})
-          .then(function(md) {
-            resolve({user: user.attributes, memberships: md.toJSON()})
-          })
-          .catch(function(err) {
-            reject();
-          })
+          resolve({user: user.attributes, memberships: {}})
+          // Memberships.where({
+          //   membership_user_id: user.id
+          // }).fetchAll({})
+          // .then(function(md) {
+          //   resolve({user: user.attributes, memberships: md.toJSON()})
+          // })
+          // .catch(function(err) {
+          //   reject();
+          // })
         } else {
           resolve(null)
         }

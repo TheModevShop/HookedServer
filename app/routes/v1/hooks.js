@@ -30,7 +30,7 @@ router.route('/')
     }
     Hooks.getAll(req.query, position)
       .then(function(hooks) {
-        console.log(hooks)
+        // console.log(hooks)
         res.json(hooks);
       })
       .catch(function(err) {
@@ -41,11 +41,12 @@ router.route('/')
 
 router.route('/:id')
   .get(function(req, res) {
+    const userId = _.get(req, 'decoded.user.id') || -1;
     const position = {
       lat: req.headers.lat,
       lng: req.headers.lng
     }
-    Hooks.getById(req.params.id, req.query, position)
+    Hooks.getById(req.params.id, req.query, position, userId)
       .then(function(hook) {
         if (hook && hook[0]) {
           res.json(hook[0]);
@@ -54,6 +55,7 @@ router.route('/:id')
         }
       })
       .catch(function(err) {
+        console.log(err)
         res.status(422).json(err);
       });
   })
@@ -69,11 +71,12 @@ router.route('/:id')
 
 router.route('/:id/redeem')
   .post(function(req, res) {
+    const userId = _.get(req, 'decoded.user.id') || -1;
     const position = {
       lat: req.headers.lat,
       lng: req.headers.lng
     }
-    Hooks.redeem(req.params.id, req.body, position)
+    Hooks.redeem(req.params.id, req.body, position, userId)
       .then(function(hook) {
         res.json(hook);
       })
